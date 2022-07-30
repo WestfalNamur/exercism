@@ -21,7 +21,7 @@ fn check_form(s: &str) -> bool {
     }
     
     // Check if all numeric
-    if !s.chars().all(|c| c.is_numeric()) {
+    if !s.chars().all(|c| c.is_ascii_digit()) {
         return false
     }
     
