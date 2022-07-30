@@ -12,26 +12,32 @@
 ///     3. If the sum is evenly divisible by 10, then the number is valid.
 ///     This number is valid!
 
-fn check_code_form(s: &str) -> bool {
+
+pub fn is_valid(code: &str) -> bool {
+
+    // Remove white spaces (They are valid chars but need to be removed).
+    let s: String = code.chars().filter(|c| !c.is_whitespace()).collect();
 
     // Check length
     if s.len() <= 1 {
         return false
     }
-
-    // All chars are numeric?
-    s.chars().all(|c| c.is_numeric())
-}
-
-pub fn is_valid(code: &str) -> bool {
-
-    // Remove white spaces as they are valid but need to be removed.
-    let s: String = code.chars().filter(|c| !c.is_whitespace()).collect();
-
-    // Check code form
-    if !check_code_form(&s) {
+    
+    // Check if all numeric
+    if !s.chars().all(|c| c.is_ascii_digit()) {
         return false
     }
 
-    unimplemented!("Is the Luhn checksum for {} valid?", code);
+    // Convert to numerical
+    let digits: Vec<u32> = s.chars().map(|c| c.to_digit(10).unwrap()).collect();
+
+    // Double every other digit and sum up.
+    let sum_doubled_digits: u32 = digits.iter().rev().enumerate().map(|(i,&d)| match d {
+        n if i % 2 == 0 => n,
+        n if n < 5 => n * 2,
+        n => n * 2 - 9
+    }).sum();
+
+    // Check if the resulting sum is evenly divisible by 10.
+    sum_doubled_digits % 10 == 0
 }
