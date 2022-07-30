@@ -12,38 +12,42 @@
 ///     3. If the sum is evenly divisible by 10, then the number is valid.
 ///     This number is valid!
 
-fn check_code_form(s: &str) -> bool {
+
+fn check_form(s: &str) -> bool {
 
     // Check length
     if s.len() <= 1 {
         return false
     }
-
-    // All chars are numeric?
-    s.chars().all(|c| c.is_numeric())
+    
+    // Check if all numeric
+    if !s.chars().all(|c| c.is_numeric()) {
+        return false
+    }
+    
+    true
 }
 
-fn double_digits(s: &str) -> String {
-    //doubled_digits = Vec<u32>
-    s.chars().rev().enumerate().map(|(i, c)| {
-        if i%2==0 {
-            let cx2 = c.to_digit(10) * 2;
-            return cx2.to_char().unwrap();
-        } else {
-            return c
-        }
-    }).collect()
-}
 
 pub fn is_valid(code: &str) -> bool {
 
-    // Check if input string is in valid form and clean it.
+    // Remove white spaces (They are valid chars but need to be removed).
     let s: String = code.chars().filter(|c| !c.is_whitespace()).collect();
-    if !check_code_form(&s) {
-        return false
+
+    // Check form.
+    if !check_form(&s) {
+        return false;
     }
 
-    // Double every other digit (convert chars to numbers.)
+    // Convert to numbers, and double every other digit.
+    let doubled_digits: Vec<u8> = s.as_bytes().iter().rev().enumerate().map(|(i,&d)| match d {
+        n if i % 2 == 0 => n,
+        n if n < 5 => n * 2,
+        n => n * 2 - 9,
+    }).collect();
 
-    unimplemented!("Is the Luhn checksum for {} valid?", code);
+    // Cast to u32 (avoid overflow) and sum up.
+    let sum_doubled_digits: u32 = doubled_digits.iter().map(|&d| d as u32).sum();
+
+    sum_doubled_digits % 10 == 0
 }
