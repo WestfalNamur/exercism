@@ -15,7 +15,6 @@ fn test_a_single_zero_is_invalid() {
 }
 
 #[test]
-#[ignore]
 fn test_a_simple_valid_sin_that_remains_valid_if_reversed() {
     process_valid_case("059", true);
 }

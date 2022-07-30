@@ -23,15 +23,27 @@ fn check_code_form(s: &str) -> bool {
     s.chars().all(|c| c.is_numeric())
 }
 
+fn double_digits(s: &str) -> String {
+    //doubled_digits = Vec<u32>
+    s.chars().rev().enumerate().map(|(i, c)| {
+        if i%2==0 {
+            let cx2 = c.to_digit(10) * 2;
+            return cx2.to_char().unwrap();
+        } else {
+            return c
+        }
+    }).collect()
+}
+
 pub fn is_valid(code: &str) -> bool {
 
-    // Remove white spaces as they are valid but need to be removed.
+    // Check if input string is in valid form and clean it.
     let s: String = code.chars().filter(|c| !c.is_whitespace()).collect();
-
-    // Check code form
     if !check_code_form(&s) {
         return false
     }
+
+    // Double every other digit (convert chars to numbers.)
 
     unimplemented!("Is the Luhn checksum for {} valid?", code);
 }
