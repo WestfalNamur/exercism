@@ -29,6 +29,7 @@ fn check_form(s: &str) -> bool {
 }
 
 
+
 pub fn is_valid(code: &str) -> bool {
 
     // Remove white spaces (They are valid chars but need to be removed).
@@ -39,15 +40,15 @@ pub fn is_valid(code: &str) -> bool {
         return false;
     }
 
-    // Convert to numbers, and double every other digit.
-    let doubled_digits: Vec<u8> = s.as_bytes().iter().rev().enumerate().map(|(i,&d)| match d {
+    // Convert to numerical
+    let digits: Vec<u32> = s.chars().map(|c| c.to_digit(10).unwrap()).collect();
+
+    // Double every other digit and sum up.
+    let sum_doubled_digits: u32 = digits.iter().rev().enumerate().map(|(i,&d)| match d {
         n if i % 2 == 0 => n,
         n if n < 5 => n * 2,
-        n => n * 2 - 9,
-    }).collect();
-
-    // Cast to u32 (avoid overflow) and sum up.
-    let sum_doubled_digits: u32 = doubled_digits.iter().map(|&d| d as u32).sum();
+        n => n * 2 - 9
+    }).sum();
 
     sum_doubled_digits % 10 == 0
 }
